@@ -4,6 +4,14 @@
 
 This project detects cyberbullying in a single text input using a DistilBERT-based classifier.
 
+Before running predictions, download the required model files from Google Drive by running the provided downloader script.
+
+There are two Google Drive folders to download from:
+- `https://drive.google.com/drive/folders/142uQgqE1JsclxDh-DL-ionCB8Flqbf8H?usp=sharing`
+- `https://drive.google.com/drive/folders/1J0xiFBJxbwLREqR6WhPzaxd-PyNA28uQ?usp=sharing`
+
+The downloader script preserves the file names as they appear in Google Drive.
+
 It includes:
 - `cyberbully_final.py`: training, evaluation, and model export logic
 - `predict_cyberbullying_cli.py`: simple CLI for predicting one text at a time
