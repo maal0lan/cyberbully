@@ -1,0 +1,73 @@
+{
+  "random_seed": 42,
+  "source_words_to_select": 20,
+  "mutation_pool_size": 30,
+  "mutations_to_use_per_word": 8,
+  "min_sentences_per_mutation": 2,
+  "max_sentences_per_mutation": 3,
+  "similarity_threshold": 0.5,
+  "transformation_distribution": {
+    "leetspeak": 0.3,
+    "deletion": 0.15,
+    "insertion": 0.15,
+    "repetition": 0.1,
+    "keyboard_noise": 0.1,
+    "mixed_script": 0.1,
+    "spacing_noise": 0.1
+  },
+  "level_distribution": {
+    "mild": 0.6,
+    "moderate": 0.3,
+    "heavy": 0.1
+  },
+  "input_file": "checker_till_499.csv",
+  "output_file": "cyberbullying_augmented_noise.csv",
+  "selected_source_words": [
+    "barenaked",
+    "anilingus",
+    "busty",
+    "brown showers",
+    "bondage",
+    "beaners",
+    "bareback",
+    "felch",
+    "ball sack",
+    "dick",
+    "apeshit",
+    "anus",
+    "ball sucking",
+    "blumpkin",
+    "boob",
+    "eat my ass",
+    "femdom",
+    "blonde on blonde action",
+    "dendrophilia",
+    "bollocks"
+  ],
+  "dataset_stats": {
+    "total_rows": 6249,
+    "unique_source_words": 150,
+    "category_distribution": {
+      "venting_no_target": 900,
+      "sarcasm_among_friends": 900,
+      "topic_opinion_negative": 895,
+      "targeted_insult_identity": 894,
+      "threat": 894,
+      "targeted_insult_general": 883,
+      "meta_commentary_condemning_hate": 883
+    },
+    "source_word_frequency_min": 36,
+    "source_word_frequency_max": 42,
+    "source_word_frequency_mean": 41.66,
+    "pct_rows_source_word_in_text": 92.53
+  },
+  "results": {
+    "augmented_rows": 404,
+    "original_rows": 6249,
+    "final_rows": 6653,
+    "duplicate_count": 0,
+    "invalid_mutation_count": 199,
+    "unmatched_source_word_row_count": 69,
+    "mutation_shortfall_count": 0
+  }
+}
