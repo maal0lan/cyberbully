@@ -7,3 +7,5 @@ tqdm
 demoji
 gdown
 gdown
+seaborn
+matplotlib
