@@ -94,7 +94,7 @@ except ImportError:                                   # pragma: no cover
 # ============================================================================
 DEFAULTS = dict(
     data_paths=[r"dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_merged_dataset.csv"],   # can pass several; they get concatenated
-    out_dir="./cyberbully_v0.1_run",
+    out_dir="./cyberbully_v0.1_run_french",
     model="distilbert-base-uncased",
     max_len=128,
     batch_size=16,
