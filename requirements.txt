@@ -9,3 +9,5 @@ gdown
 gdown
 seaborn
 matplotlib
+sentencepiece
+sacremoses
