@@ -56,11 +56,25 @@ os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedGroupKFold
-from sklearn.metrics import (
-    accuracy_score, f1_score, precision_score, recall_score, roc_auc_score,
-    average_precision_score, confusion_matrix, classification_report,
-)
+try:
+    from sklearn.model_selection import StratifiedGroupKFold
+    from sklearn.metrics import (
+        accuracy_score, f1_score, precision_score, recall_score, roc_auc_score,
+        average_precision_score, confusion_matrix, classification_report,
+    )
+except ImportError:
+    StratifiedGroupKFold = None
+
+# Prevent transformers from loading scikit-learn when blocked by Windows Application Control
+try:
+    import transformers.utils.import_utils as _tui
+    _tui.is_sklearn_available = lambda: False
+    import transformers.utils as _tu
+    _tu.is_sklearn_available = lambda: False
+except Exception:
+    pass
+
+
 
 try:
     from tqdm import tqdm
@@ -79,7 +93,7 @@ except ImportError:                                   # pragma: no cover
 # CONFIG DEFAULTS (all overridable from the command line)
 # ============================================================================
 DEFAULTS = dict(
-    data_paths=["dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_merged_dataset.csv"],   # can pass several; they get concatenated
+    data_paths=[r"dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_merged_dataset.csv"],   # can pass several; they get concatenated
     out_dir="./cyberbully_v0.1_run",
     model="distilbert-base-uncased",
     max_len=128,
