@@ -61,8 +61,13 @@ def merge_datasets(explicit_path: Path, non_explicit_path: Path, output_path: Pa
     file_size_mb = output_path.stat().st_size / (1024 * 1024)
 
     # 4. Save Augmented-Only Dataset
-    # Filter by augmentation_id not null / is_augmented == 1
-    is_aug_mask = df_merged["augmentation_id"].notna() | (df_merged["is_augmented"] == 1)
+    # Some generated datasets do not include augmentation metadata.
+    if {"augmentation_id", "is_augmented"}.issubset(df_merged.columns):
+        is_aug_mask = df_merged["augmentation_id"].notna() | (df_merged["is_augmented"] == 1)
+    elif "is_augmented" in df_merged.columns:
+        is_aug_mask = df_merged["is_augmented"].eq(1)
+    else:
+        is_aug_mask = pd.Series(False, index=df_merged.index)
     df_augmented = df_merged[is_aug_mask].copy()
     
     # User-requested spelling
@@ -105,7 +110,7 @@ def merge_datasets(explicit_path: Path, non_explicit_path: Path, output_path: Pa
     print(ct.to_string())
 
     print("\n4. Augmentation Breakdown:")
-    aug_dist = df_merged["is_augmented"].value_counts()
+    aug_dist = df_merged["is_augmented"].value_counts() if "is_augmented" in df_merged.columns else pd.Series(dtype="int64")
     print(f"   - Original samples : {aug_dist.get(0, 0):6,} ({aug_dist.get(0, 0) / len(df_merged) * 100:.2f}%)")
     print(f"   - Augmented samples: {aug_dist.get(1, 0):6,} ({aug_dist.get(1, 0) / len(df_merged) * 100:.2f}%)")
 
