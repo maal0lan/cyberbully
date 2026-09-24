@@ -1,106 +1,204 @@
-# Cyberbullying Text Detection
+# Cyberbully
 
-## Project goal
+[![Python Package](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://pypi.org/project/cyberbully/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
+[![Transformers](https://img.shields.io/badge/Transformers-HuggingFace-orange.svg)](https://huggingface.co/)
 
-This project detects cyberbullying in a single text input using a DistilBERT-based classifier.
+Production-grade **Cyberbullying Text Detection** powered by transformer neural networks and multi-task learning.
 
-Before running predictions, download the required model files from Google Drive by running the provided downloader script.
+Designed for social media moderation, chat moderation, comment screening, and trust & safety workflows.
 
-There are two Google Drive folders to download from:
-- `https://drive.google.com/drive/folders/142uQgqE1JsclxDh-DL-ionCB8Flqbf8H?usp=sharing`
-- `https://drive.google.com/drive/folders/1J0xiFBJxbwLREqR6WhPzaxd-PyNA28uQ?usp=sharing`
+---
 
-The downloader script preserves the file names as they appear in Google Drive.
+## Key Features
 
-It includes:
-- `cyberbully_final.py`: training, evaluation, and model export logic
-- `predict_cyberbullying_cli.py`: simple CLI for predicting one text at a time
-- `cyberbully_model_final/`: saved model checkpoint and tokenizer files
-- `requirements.txt`: package requirements for the Python environment
-- `environment.yml`: optional Conda environment manifest
-- `activate_cyberbully_env.bat`: optional Windows helper to activate the Conda environment
+- **Multi-Task Neural Architecture**: Joint binary classifier (cyberbullying vs. safe) with a 20-way auxiliary intent head (threats, targeted insults, implicit mockery, backhanded compliments, sarcasm among friends, venting, etc.).
+- **Context & Nuance Aware**: Distinguishes harmful bullying from benign sarcasm among friends, self-venting, or constructive criticism.
+- **Adversarial Robustness**: Handles leetspeak (e.g. `@$$h0le`, `sna7ch`), typo variations, and emoji sentiment without breaking casing or punctuation.
+- **Lightweight Package (<15 KB)**: Compliant with PyPI upload limits by decoupling heavy 260MB model checkpoints and providing automatic background caching to `~/.cache/cyberbully/models/`.
+- **Flexible Interface**: Simple Python API and a rich interactive CLI.
 
-## Inputs
+---
 
-- For prediction: a single text string such as a comment, tweet, or message.
-- For training/retraining: the dataset `cyberbullying_data.csv`.
+## Installation
 
-## Outputs
+### From Source / Development
 
-- `predict_cyberbullying_cli.py` prints:
-  - predicted label: `cyberbullying` or `not_cyberbullying`
-  - probability score for the `cyberbullying` class
-  - threshold used for classification
-- `cyberbully_final.py` trains the model and saves:
-  - `cyberbully_model_final/best_model.pt`
-  - tokenizer files in `cyberbully_model_final/`
-  - `cyberbully_model_final/config.json`
-
-## Requirements
-
-Install dependencies with pip:
-
-```powershell
-pip install -r requirements.txt
+```bash
+git clone https://github.com/maal0lan/cyberbully.git
+cd cyberbully
+pip install -e .
 ```
 
-### Optional: Conda
+### Optional Dependencies
 
-Using Conda is optional. If you want to use it, create and activate the environment:
-
-```powershell
-conda env create -f environment.yml
-activate_cyberbully_env.bat
+For running model evaluations and plotting metrics:
+```bash
+pip install -e ".[eval]"
 ```
 
-If you do not want Conda, just use `pip install -r requirements.txt`.
-
-## Using the prediction CLI
-
-Run the CLI with a single text input:
-
-```powershell
-python predict_cyberbullying_cli.py "This is an example message"
+For testing:
+```bash
+pip install -e ".[dev]"
 ```
 
-If your model directory is named differently, provide it explicitly:
+---
 
-```powershell
-python predict_cyberbullying_cli.py --model-dir cyberbully_model_final "This is an example message"
+## Quickstart (Python API)
+
+### 1. Simple Boolean Check
+
+```python
+import cyberbully
+
+# True
+print(cyberbully.is_cyberbullying("Go jump off a cliff you loser"))
+
+# False
+print(cyberbully.is_cyberbullying("You are a wonderful person!"))
 ```
 
-## Training or re-running the model
+### 2. Detailed Prediction
 
-To train or evaluate the model and save the checkpoint, run:
+```python
+import cyberbully
 
-```powershell
-python cyberbully_final.py
+result = cyberbully.predict("Nobody likes you, you are ugly and pathetic")
+
+print(result.label)         # 'cyberbullying'
+print(result.score)         # 0.9996
+print(result.confidence)    # 0.9996
+print(result.category)      # 'targeted_insult_general'
+print(result.category_scores)
+# {
+#   'targeted_insult_general': 0.8227,
+#   'threat': 0.1511,
+#   ...
+# }
 ```
 
-This script:
-- loads `cyberbullying_data.csv`
-- trains a DistilBERT classifier
-- saves the best checkpoint to `cyberbully_model_final/best_model.pt`
-- saves tokenizer and config files
+### 3. Explainability Diagnostics
 
-## Model evaluation and graphs
+```python
+import cyberbully
 
-There is an evaluation helper in `1_final_model/evaluate_model.py` that can be used to run a full test inference and generate evaluation plots.
+explanation = cyberbully.explain("You are so annoying")
+print(explanation)
+# {
+#   'text': 'You are so annoying',
+#   'prediction': 'cyberbullying',
+#   'cyberbullying_score': '0.9412',
+#   'threshold': '0.2300',
+#   'primary_intent_category': 'targeted_insult_general',
+#   'assessment': 'Flagged as cyberbullying (94.1% probability exceeds threshold 23.0%)'
+# }
+```
 
-Running the evaluation script produces an `eval_results/` folder containing:
-- `roc_curve.png` — Receiver Operating Characteristic (ROC) curve with AUC
-- `pr_auc_curve.png` — Precision-Recall curve with AUC and baseline
-- `accuracy_vs_threshold.png` — accuracy, F1, precision, and recall across decision thresholds
-- `confusion_matrix.png` — confusion matrix showing true/false positives and negatives
+### 4. Custom Model Instance & Batch Processing
 
-These graphs help you:
-- compare model performance across thresholds
-- see how precision and recall trade off
-- confirm whether the selected classification threshold is appropriate
-- inspect error patterns with the confusion matrix
+```python
+from cyberbully import CyberbullyingDetector
 
-## Notes
+# Automatically detects local models/ or downloads to cache on first use
+detector = CyberbullyingDetector()
 
-- The CLI uses `best_model.pt` from `cyberbully_model_final/` by default.
-- The prediction label threshold is loaded from `config.json` when available.
-- If `demoji` is not installed, emojis are stripped instead of converted.
+texts = [
+    "Have a fantastic day!",
+    "You are an idiot.",
+    "Can you please help review this PR?"
+]
+
+results = detector.predict(texts, batch_size=32)
+for res in results:
+    print(f"[{res.label.upper():17s}] ({res.score:.3f}) {res.text}")
+```
+
+---
+
+## Command-Line Interface (CLI)
+
+The package provides a built-in `cyberbully` command:
+
+### Classify Single or Multiple Texts
+
+```bash
+cyberbully "You are a wonderful person"
+cyberbully "Nobody likes you" --threshold 0.30
+```
+
+### Interactive Mode
+
+Launch an interactive evaluation console:
+
+```bash
+cyberbully -i
+```
+
+### Batch Processing from CSV or Text Files
+
+```bash
+cyberbully --file comments.csv --output flagged_results.csv
+```
+
+### Check Model Info & Cache
+
+```bash
+cyberbully --info
+```
+
+### Pre-download Model Checkpoint
+
+```bash
+cyberbully --download
+```
+
+---
+
+## Model Weights & Distribution
+
+The trained checkpoint (`best_model.pt`, ~265MB) is decoupled from the PyPI wheel for fast installation:
+
+1. **Local Search**: The detector first inspects:
+   - `models/cyberbully_v0.1_run`
+   - Explicit path specified via `--model-dir` or `CYBERBULLY_MODEL_DIR`
+2. **Cache Fallback**: If not found in local directories, it checks `~/.cache/cyberbully/models/cyberbully_v0.1_run`.
+3. **Auto-Download**: If missing, it downloads the checkpoint and tokenizer directly from Google Drive upon first execution.
+
+---
+
+## Repository Structure
+
+```text
+cyberbully/
+├── src/
+│   └── cyberbully/               # Core Python package
+│       ├── __init__.py           # Package exports & convenience API
+│       ├── __main__.py           # python -m cyberbully entrypoint
+│       ├── cli.py                # Command-line interface
+│       ├── detector.py           # CyberbullyingDetector engine
+│       ├── downloader.py         # Model downloader & cache management
+│       ├── model.py              # PyTorch MultiTaskClassifier architecture
+│       └── preprocessing.py      # Adversarial & social media text cleaner
+├── models/
+│   └── cyberbully_v0.1_run/      # Trained PyTorch model, tokenizer, and config
+├── research/                     # Archived research & experiments
+│   ├── dataset_generation/       # Synthetic dataset generation & word lists
+│   ├── eval_results/             # Evaluation scripts, plots & threshold analysis
+│   ├── notes/                    # Architectural notes & reports
+│   ├── cyberbully_output/        # Legacy Keras training artifacts
+│   └── cyberbully_final.py       # Original training pipeline script
+├── tests/
+│   ├── test_detector.py          # Pytest suite for model inference
+│   └── test_preprocessing.py   # Unit tests for text normalization
+├── pyproject.toml                # Modern PEP 621 / setuptools packaging
+├── MANIFEST.in                   # Packaging exclusions
+├── requirements.txt              # Environment dependencies
+└── README.md                     # Documentation
+```
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

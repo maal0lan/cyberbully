@@ -1,3 +1,32 @@
-cyberbully_model_final/best_model.pt
-cyberbully_v0.1_run/best_model.pt
-cyberbully_v0.1_run/last_checkpoint.pt
+# Model weights (large files >100MB)
+*.pt
+*.bin
+*.keras
+models/**/*.pt
+models/**/*.keras
+research/**/*.keras
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Environments & IDEs
+.env
+.venv
+env/
+venv/
+.vscode/
+.idea/
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
