@@ -177,8 +177,7 @@ def load_and_prepare(paths, label_source: str, out_dir: str) -> pd.DataFrame:
     missing = need - set(df.columns)
     if missing:
         sys.exit(f"CSV is missing required columns: {missing}")
-    n0 = len(df)
-    print(f"Combined total: {n0:,} rows from {len(paths)} file(s)")
+    print(f"Combined total: {len(df):,} rows from {len(paths)} file(s)")
 
     for c, default in [("is_augmented", 0), ("original_text", np.nan),
                        ("dataset_source", "unknown"), ("target_type", "unknown")]:
@@ -598,11 +597,29 @@ def parse_args():
                    help="resume from <out-dir>/last_checkpoint.pt if it exists")
     p.add_argument("--predict", nargs="+", metavar="TEXT",
                    help="load the model in --out-dir and classify these texts")
-    return p.parse_args()
+    args = p.parse_args()
+    if args.max_len < 1:
+        p.error("--max-len must be at least 1")
+    if args.batch_size < 1:
+        p.error("--batch-size must be at least 1")
+    if args.grad_accum_steps < 1:
+        p.error("--grad-accum-steps must be at least 1")
+    if args.epochs < 1:
+        p.error("--epochs must be at least 1")
+    if args.num_workers < 0:
+        p.error("--num-workers cannot be negative")
+    if not 0.0 <= args.warmup_ratio <= 1.0:
+        p.error("--warmup-ratio must be between 0 and 1")
+    if args.aux_weight < 0.0:
+        p.error("--aux-weight cannot be negative")
+    return args
 
 
 def main():
     a = parse_args()
+
+    if StratifiedGroupKFold is None:
+        sys.exit("scikit-learn is required. Install it with: python -m pip install scikit-learn")
 
     if a.predict:
         for r in predict_texts(a.predict, a.out_dir):
@@ -656,7 +673,10 @@ def main():
                     if any(nd in nme for nd in no_decay)], "weight_decay": 0.0},
     ]
     opt = AdamW(groups, lr=a.lr)
-    total = len(tr_loader) * a.epochs
+    # The scheduler advances once per optimizer update, not once per batch when
+    # gradient accumulation is enabled.
+    updates_per_epoch = math.ceil(len(tr_loader) / a.grad_accum_steps)
+    total = updates_per_epoch * a.epochs
     sched = get_linear_schedule_with_warmup(opt, int(total * a.warmup_ratio), total)
     scaler = torch.amp.GradScaler("cuda", enabled=(dev.type == "cuda" and amp == torch.float16))
 
