@@ -56,11 +56,25 @@ os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedGroupKFold
-from sklearn.metrics import (
-    accuracy_score, f1_score, precision_score, recall_score, roc_auc_score,
-    average_precision_score, confusion_matrix, classification_report,
-)
+try:
+    from sklearn.model_selection import StratifiedGroupKFold
+    from sklearn.metrics import (
+        accuracy_score, f1_score, precision_score, recall_score, roc_auc_score,
+        average_precision_score, confusion_matrix, classification_report,
+    )
+except ImportError:
+    StratifiedGroupKFold = None
+
+# Prevent transformers from loading scikit-learn when blocked by Windows Application Control
+try:
+    import transformers.utils.import_utils as _tui
+    _tui.is_sklearn_available = lambda: False
+    import transformers.utils as _tu
+    _tu.is_sklearn_available = lambda: False
+except Exception:
+    pass
+
+
 
 try:
     from tqdm import tqdm
@@ -79,8 +93,8 @@ except ImportError:                                   # pragma: no cover
 # CONFIG DEFAULTS (all overridable from the command line)
 # ============================================================================
 DEFAULTS = dict(
-    data_paths=["dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_merged_dataset.csv"],   # can pass several; they get concatenated
-    out_dir="./cyberbully_v0.1_run",
+    data_paths=[r"dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_merged_dataset.csv"],   # can pass several; they get concatenated
+    out_dir="./cyberbully_v0.1_run_french",
     model="distilbert-base-uncased",
     max_len=128,
     batch_size=16,
@@ -163,8 +177,7 @@ def load_and_prepare(paths, label_source: str, out_dir: str) -> pd.DataFrame:
     missing = need - set(df.columns)
     if missing:
         sys.exit(f"CSV is missing required columns: {missing}")
-    n0 = len(df)
-    print(f"Combined total: {n0:,} rows from {len(paths)} file(s)")
+    print(f"Combined total: {len(df):,} rows from {len(paths)} file(s)")
 
     for c, default in [("is_augmented", 0), ("original_text", np.nan),
                        ("dataset_source", "unknown"), ("target_type", "unknown")]:
@@ -584,11 +597,29 @@ def parse_args():
                    help="resume from <out-dir>/last_checkpoint.pt if it exists")
     p.add_argument("--predict", nargs="+", metavar="TEXT",
                    help="load the model in --out-dir and classify these texts")
-    return p.parse_args()
+    args = p.parse_args()
+    if args.max_len < 1:
+        p.error("--max-len must be at least 1")
+    if args.batch_size < 1:
+        p.error("--batch-size must be at least 1")
+    if args.grad_accum_steps < 1:
+        p.error("--grad-accum-steps must be at least 1")
+    if args.epochs < 1:
+        p.error("--epochs must be at least 1")
+    if args.num_workers < 0:
+        p.error("--num-workers cannot be negative")
+    if not 0.0 <= args.warmup_ratio <= 1.0:
+        p.error("--warmup-ratio must be between 0 and 1")
+    if args.aux_weight < 0.0:
+        p.error("--aux-weight cannot be negative")
+    return args
 
 
 def main():
     a = parse_args()
+
+    if StratifiedGroupKFold is None:
+        sys.exit("scikit-learn is required. Install it with: python -m pip install scikit-learn")
 
     if a.predict:
         for r in predict_texts(a.predict, a.out_dir):
@@ -642,7 +673,10 @@ def main():
                     if any(nd in nme for nd in no_decay)], "weight_decay": 0.0},
     ]
     opt = AdamW(groups, lr=a.lr)
-    total = len(tr_loader) * a.epochs
+    # The scheduler advances once per optimizer update, not once per batch when
+    # gradient accumulation is enabled.
+    updates_per_epoch = math.ceil(len(tr_loader) / a.grad_accum_steps)
+    total = updates_per_epoch * a.epochs
     sched = get_linear_schedule_with_warmup(opt, int(total * a.warmup_ratio), total)
     scaler = torch.amp.GradScaler("cuda", enabled=(dev.type == "cuda" and amp == torch.float16))
 
