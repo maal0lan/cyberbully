@@ -10,15 +10,15 @@ Install:
     (deberta-v3 also needs:  pip install sentencepiece tiktoken)
 
 Usage:
-    python train_cyberbully.py --smoke                      # 1-minute sanity run
-    python train_cyberbully.py --prep-only                  # only clean + split, write CSVs
-    python train_cyberbully.py                              # full run, DistilBERT
-    python train_cyberbully.py --model microsoft/deberta-v3-base --batch-size 16 --lr 2e-5
-    python train_cyberbully.py --data-paths raw.csv augmented.csv     # auto-concat + dedup
-    python train_cyberbully.py --data-paths merged.csv                # or just pass merged
-    python train_cyberbully.py --resume                     # continue after a crash/stop
-    python train_cyberbully.py --batch-size 8 --grad-accum-steps 4    # effective batch 32, low VRAM
-    python train_cyberbully.py --predict "you are pathetic" "I hate this movie"
+    python cyberbully_final.py --smoke                      # 1-minute sanity run
+    python cyberbully_final.py --prep-only                  # only clean + split, write CSVs
+    python cyberbully_final.py                              # full run, DistilBERT
+    python cyberbully_final.py --model microsoft/deberta-v3-base --batch-size 16 --lr 2e-5
+    python cyberbully_final.py --data-paths raw.csv augmented.csv     # auto-concat + dedup
+    python cyberbully_final.py --data-paths merged.csv                # or just pass merged
+    python cyberbully_final.py --resume                     # continue after a crash/stop
+    python cyberbully_final.py --batch-size 8 --grad-accum-steps 4    # effective batch 32, low VRAM
+    python cyberbully_final.py --predict "you are pathetic" "I hate this movie"
 
 What this script does differently from the old one (on purpose):
   1. Splits by *original sentence group* (StratifiedGroupKFold) so a sentence and its
@@ -94,7 +94,7 @@ except ImportError:                                   # pragma: no cover
 # ============================================================================
 DEFAULTS = dict(
     data_paths=[r"dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_merged_dataset.csv"],   # can pass several; they get concatenated
-    out_dir="./cyberbully_v0.1_run_french",
+    out_dir="./cyberbully_v0.1_run",
     model="distilbert-base-uncased",
     max_len=128,
     batch_size=16,
