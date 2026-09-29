@@ -1,88 +1,211 @@
-weight
-height
-acne
-braces
-glasses
-hair
-clothes
-shoes
-accent
-voice
-singing
-grades
-intelligence
-handwriting
-family
-parents
-income
-house
-car
-phone
-gaming skill
-sports ability
-running speed
-art skills
-dancing
-crush
-relationship status
-friend group
-lunch table
-seating choice
-class presentation
-sports team tryout
-group project
-online post
-profile picture
-video game rank
-team loss
-exam score
-homework
-teacher's pet
-new kid
-old clothes
-generic sneakers
-lisp
-stutter
-freckles
-curly hair
-skin tone
-body shape
-food choice
-lunch box
-bike
-backpack
-pencil case
-haircut
-school bus
-recess
-gym class
-locker
-report card
-spelling bee
-science fair
-talent show
-choir
-debate team
-chess club
-math test
-reading level
-lunch money
-walking home
-social media followers
-comment section
-group chat
-birthday party invite
-sleepover
-vacation photos
-new shoes
-old phone model
-secondhand jacket
-public speaking
-nervous laugh
-shy personality
-loud personality
-quiet kid
-class clown
-sports jersey
-uniform
-name pronunciation
+job title
+promotion
+work presentation
+office lunch
+remote work setup
+resume
+career change
+getting laid off
+email writing style
+meeting contribution
+salary
+commute
+internship
+startup idea
+side hustle
+dorm room
+roommate habits
+major choice
+student loans
+campus club
+study habits
+thesis defense
+graduation
+scholarship
+dining hall
+college admission
+entrance exam rank
+board exam result
+tuition classes
+failing a subject
+class monitor
+answering in class
+asking questions
+backbencher
+topper
+english fluency
+mispronounced word
+typo in a post
+streaming setup
+subscriber count
+viral video
+meme post
+selfie
+photo filter
+caption
+username
+bio
+story post
+reaction video
+fan account
+posting frequency
+video editing
+podcast
+cover song
+fan fiction
+cosplay
+aim in shooter games
+voice chat
+ranked losses
+gaming setup
+esports team
+game choice
+skin purchases
+lag excuses
+mobile gaming
+gym workout
+weightlifting
+marathon
+swimming
+soccer position
+bench warmer
+coach's favorite
+team captain
+yoga
+cycling
+hiking pace
+martial arts belt
+fitness tracker
+teeth
+smile
+nose
+ears
+eyebrows
+wrinkles
+gray hair
+baldness
+tattoo
+piercing
+makeup
+nail style
+fashion sense
+hair color
+beard
+birthmark
+posture
+walking style
+laugh
+single parent
+big family
+small apartment
+moving often
+hand-me-downs
+family business
+grandparents
+siblings
+family vacation
+pets
+home cooking
+cultural food
+festival clothing
+language spoken at home
+being the youngest
+skipping a grade
+being held back
+older student
+middle age
+retirement
+using technology
+old-fashioned taste
+sleep schedule
+dark circles
+low energy
+hearing aids
+wearing a cast
+getting sick often
+making friends
+being alone
+friend drama
+ex-friend
+breakup
+dating profile
+first date
+love letter
+flirting attempts
+relationship photos
+wedding
+being single at a party
+left on read
+ghosting
+unanswered message
+typing style
+emoji use
+voice notes
+slow replies
+arriving late
+brand names
+designer bag
+cheap gifts
+expensive hobby
+splitting the bill
+rent
+thrift shopping
+no vacation
+part-time job
+allowance
+birthday gift
+neighbors
+apartment building
+school reunion
+hometown
+village accent
+public transport
+community event
+volunteering
+cooking
+baking fail
+photography
+drawing
+poetry
+guitar
+blog writing
+coding skills
+robotics club
+anime taste
+music taste
+book choice
+collecting
+gardening
+painting
+knitting
+reading habit
+movie taste
+confidence
+overthinking
+bragging
+sense of humor
+awkwardness
+clumsiness
+forgetfulness
+crying
+being sensitive
+introvert
+perfectionism
+laziness
+ambition
+being competitive
+stage fright
+school play
+audition
+dance recital
+karaoke
+open mic
+sports day
+race result
+yearbook photo
+group photo
+selfie angle
+old photo
+photo tag
+situationship
+

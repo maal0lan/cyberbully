@@ -1,11 +1,9 @@
 """
 Categories for the "clean" dataset: cyberbullying and non-bullying sentences
-that contain NO profanity/slurs at all. Bullying here is expressed through
-targeting, mockery, exclusion, manipulation, or clean-language threats/insults
-rather than bad words.
+with NO profanity/slurs. Each category is seeded with a TOPIC (e.g. "weight",
+"grades", "accent") instead of a bad word.
 
-Each category is seeded with a TOPIC (e.g. "weight", "grades", "accent")
-instead of a bad word.
+v2 changes: 20 categories (was 15), STYLES list for per-call variation.
 """
 
 CATEGORIES = {
@@ -77,6 +75,23 @@ CATEGORIES = {
             "profanity, clear target."
         ),
     },
+    "cyberstalking_monitoring": {
+        "label": 1,
+        "instruction": (
+            "Write a short, unsettling sentence where the writer tells a specific person "
+            "they are watching, tracking, or keeping screenshots of everything the person "
+            "posts about their {topic}, in a way meant to intimidate. No profanity, "
+            "clear target."
+        ),
+    },
+    "fake_joke_deniability": {
+        "label": 1,
+        "instruction": (
+            "Write a short sentence that is a real put-down of a specific person about "
+            "their {topic}, disguised as a joke with 'just kidding', 'lol', or 'relax, "
+            "it's a joke' so the writer can deny it. No profanity, clear target."
+        ),
+    },
 
     # ---- label 0: hard negatives, also no profanity ----
     "topic_opinion_negative": {
@@ -132,7 +147,45 @@ CATEGORIES = {
             "not doing it. No profanity, no insult directed by the writer at anyone."
         ),
     },
+    "friendly_banter": {
+        "label": 0,
+        "instruction": (
+            "Write a short playful teasing message between close friends about "
+            "{topic}, clearly affectionate (laughing tone, inside-joke feel) with no "
+            "intent to hurt or demean. No profanity."
+        ),
+    },
+    "victim_reporting": {
+        "label": 0,
+        "instruction": (
+            "Write a short sentence where someone describes or reports being bullied "
+            "about their {topic}, sharing how it felt or asking for help. The writer "
+            "is the victim or a concerned friend, not the bully. No profanity."
+        ),
+    },
+    "sarcasm_harmless": {
+        "label": 0,
+        "instruction": (
+            "Write a short sarcastic or wry remark about {topic} in general, or about "
+            "the writer themselves, that is harmless and not aimed at hurting anyone "
+            "else. No profanity."
+        ),
+    },
 }
+
+# Per-call style hints, picked at random in the pipeline to boost diversity.
+STYLES = [
+    "like a Discord message",
+    "like an Instagram comment",
+    "like a YouTube reply",
+    "like a group-chat text in casual lowercase slang with a few typos",
+    "as one long run-on sentence",
+    "very short, under 8 words each",
+    "as a reply to someone's post",
+    "like a TikTok comment with emoji",
+    "in a formal, polite-sounding tone",
+    "like a forum post",
+]
 
 SYSTEM_PROMPT = """You are generating training data for a cyberbullying detection \
 classifier's "no profanity" subset. You must output ONLY valid JSON, no preamble, \
@@ -145,7 +198,6 @@ exclusion, manipulation, or clean-language insults — never bad words.
 Output a JSON array of exactly {n} objects, each with keys:
 - "text": the generated sentence (string, realistic, like a real online post/comment)
 - "label": 1 if cyberbullying (targeted, intent to harm), 0 if not
-- "category": the category name given to you
 - "target_type": one of "individual", "group", "topic", "self", "none"
 
 Rules:
