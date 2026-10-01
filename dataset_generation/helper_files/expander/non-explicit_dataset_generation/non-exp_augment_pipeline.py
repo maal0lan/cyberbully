@@ -21,6 +21,7 @@ import string
 import unicodedata
 from collections import Counter, defaultdict
 from difflib import SequenceMatcher
+from pathlib import Path
 
 import pandas as pd
 
@@ -47,8 +48,10 @@ TRANSFORMATION_DISTRIBUTION = {
 
 LEVEL_DISTRIBUTION = {"mild": 0.60, "moderate": 0.30, "heavy": 0.10}
 
-INPUT_FILE = os.environ.get("AUG_INPUT", "checker_till_499.csv")
-OUTPUT_DIR = os.environ.get("AUG_OUTDIR", "dataset_generation/helper_files/expander")
+REPO_ROOT = Path(__file__).resolve().parents[4]
+DEFAULT_INPUT = REPO_ROOT / "dataset_generation" / "helper_files" / "gen" / "non-explicit-generator" / "output_clean" / "checkpoint_generated.csv"
+INPUT_FILE = os.environ.get("AUG_INPUT", str(DEFAULT_INPUT))
+OUTPUT_DIR = os.environ.get("AUG_OUTDIR", str(REPO_ROOT / "dataset_generation" / "helper_files" / "expander"))
 OUTPUT_FILE = "cyberbullying_augmented_noise.csv"
 REPORT_FILE = "cyberbullying_augmentation_report.csv"
 CONFIG_FILE = "augmentation_config.json"
@@ -317,6 +320,63 @@ def replace_source_word(text, word, mutation):
 
 
 # ----------------------------------------------------------------------------
+# 0. INPUT ADAPTER  (checkpoint CSV uses `source_topic`, pipeline needs `source_word`)
+# ----------------------------------------------------------------------------
+TOPIC_STOPWORDS = {
+    "the", "and", "for", "with", "from", "that", "this", "being", "getting",
+    "have", "has", "over", "into", "your", "their", "about",
+}
+
+
+def derive_source_word(text, topic):
+    """Return the literal string in `text` that represents `topic`, or None.
+
+    1. the full topic phrase, if it appears verbatim (case-insensitive);
+    2. else the longest topic token (>=4 chars, not a stopword) that appears in
+       the text as a word start (so "pet" matches "pets"). The word as written
+       in the text is returned, so the pipeline can always find it again.
+    """
+    text, topic = str(text), str(topic).strip()
+    m = re.search(re.escape(topic), text, flags=re.IGNORECASE)
+    if m:
+        return m.group(0).lower()
+    tokens = [t for t in re.findall(r"[A-Za-z0-9']+", topic)
+              if len(t) >= 4 and t.lower() not in TOPIC_STOPWORDS]
+    for tok in sorted(tokens, key=len, reverse=True):
+        m = re.search(r"\b" + re.escape(tok) + r"\w*", text, flags=re.IGNORECASE)
+        if m:
+            return m.group(0).lower()
+    return None
+
+
+def prepare_input(df):
+    """Make sure the frame has the columns the pipeline expects.
+
+    - renames/derives `source_word` from `source_topic` when needed
+    - fills missing optional columns (target_type)
+    - drops rows with no usable text
+    The original input file is never modified.
+    """
+    df = df.copy()
+    if "source_word" not in df.columns:
+        if "source_topic" not in df.columns:
+            raise KeyError("input needs a `source_word` or `source_topic` column")
+        df["source_topic"] = df["source_topic"].astype(str)
+        df["source_word"] = [derive_source_word(t, s)
+                             for t, s in zip(df["text"], df["source_topic"])]
+    else:
+        df["source_word"] = df["source_word"].astype(str)
+    if "target_type" not in df.columns:
+        df["target_type"] = ""
+    required = ["text", "gen_label", "category"]
+    missing = [c for c in required if c not in df.columns]
+    if missing:
+        raise KeyError(f"input is missing required columns: {missing}")
+    df = df.dropna(subset=["text"])
+    return df.reset_index(drop=True)
+
+
+# ----------------------------------------------------------------------------
 # MAIN PIPELINE (22. FINAL IMPLEMENTATION FLOW)
 # ----------------------------------------------------------------------------
 def main():
@@ -324,8 +384,13 @@ def main():
     rng = random.Random(RANDOM_SEED)
 
     # --- 1. Load (original file never modified) ------------------------------
-    df = pd.read_csv(INPUT_FILE)
-    df = df.reset_index(drop=True)
+    raw = pd.read_csv(INPUT_FILE)
+    df = prepare_input(raw)
+    n_no_match = int(df["source_word"].isna().sum())
+    # rows whose topic never appears in the text cannot be augmented; they are
+    # kept in the output as originals (source_word falls back to the topic)
+    if "source_topic" in df.columns:
+        df["source_word"] = df["source_word"].fillna(df["source_topic"])
 
     dataset_stats = {
         "total_rows": int(len(df)),
@@ -344,7 +409,9 @@ def main():
     df["augmentation_group_id"] = [f"GRP_{i:06d}" for i in range(1, len(df) + 1)]
 
     # --- 2. Source-word selection -------------------------------------------
-    unique_words = sorted(df["source_word"].astype(str).unique())
+    # only words that really occur in at least one sentence can be augmented
+    usable = df[match_mask]
+    unique_words = sorted(usable["source_word"].astype(str).unique())
     n_select = min(SOURCE_WORDS_TO_SELECT, len(unique_words))
     selected_words = rng.sample(unique_words, n_select)
 
@@ -489,6 +556,7 @@ def main():
         rep.append({"section": section, **kw})
 
     add("dataset", metric="total_rows", value=dataset_stats["total_rows"])
+    add("dataset", metric="rows_topic_not_in_text", value=n_no_match)
     add("dataset", metric="unique_source_words", value=dataset_stats["unique_source_words"])
     add("dataset", metric="pct_rows_source_word_in_text",
         value=dataset_stats["pct_rows_source_word_in_text"])

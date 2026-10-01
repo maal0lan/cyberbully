@@ -1,0 +1,101 @@
+{
+  "dataset_overview": {
+    "total_rows": 20795,
+    "total_columns": 15,
+    "column_names": [
+      "text",
+      "gen_label",
+      "category",
+      "target_type",
+      "source_word",
+      "original_source_word",
+      "augmentation_type",
+      "augmentation_level",
+      "original_text",
+      "augmentation_id",
+      "augmentation_group_id",
+      "is_augmented",
+      "dataset_source",
+      "char_len",
+      "word_cnt"
+    ],
+    "memory_usage_mb": 14.82
+  },
+  "class_balance_gen_label": {
+    "cyberbullying_1": 12743,
+    "not_cyberbullying_0": 8052,
+    "cyberbullying_pct": 61.28,
+    "not_cyberbullying_pct": 38.72,
+    "recommended_class_weights": {
+      "0": 1.2913,
+      "1": 0.8159
+    }
+  },
+  "source_distribution": {
+    "non_explicit": 20795
+  },
+  "augmentation_summary": {
+    "original_rows": 20439,
+    "augmented_rows": 356,
+    "augmentation_percentage": 1.71,
+    "augmentation_types": {
+      "deletion": 56,
+      "insertion": 53,
+      "leetspeak": 53,
+      "repetition": 53,
+      "mixed_script": 36,
+      "keyboard_noise": 30,
+      "spacing_noise": 29,
+      "leetspeak+insertion": 6,
+      "repetition+mixed_script": 6,
+      "repetition+insertion": 5
+    }
+  },
+  "text_statistics": {
+    "char_length": {
+      "mean": 110.1,
+      "median": 105.0,
+      "min": 28,
+      "max": 300,
+      "p95": 175.0
+    },
+    "word_count": {
+      "mean": 19.8,
+      "median": 19.0,
+      "min": 4,
+      "max": 57,
+      "p95": 32.0
+    }
+  },
+  "category_counts": {
+    "cyberstalking_monitoring": 1093,
+    "backhanded_compliment": 1085,
+    "venting_no_target": 1085,
+    "implicit_mockery": 1077,
+    "social_exclusion": 1067,
+    "manipulation_gaslighting": 1065,
+    "fake_joke_deniability": 1065,
+    "supportive_message": 1065,
+    "constructive_criticism": 1063,
+    "topic_opinion_negative": 1056,
+    "neutral_statement": 1050,
+    "pile_on_mob": 1049,
+    "genuine_compliment": 1042,
+    "sarcasm_harmless": 1025,
+    "friendly_banter": 1021,
+    "threat_clean": 1007,
+    "rumor_spreading": 995,
+    "meta_commentary_condemning_bullying": 984,
+    "victim_reporting": 956,
+    "explicit_insult_clean": 945
+  },
+  "target_type_counts": {
+    "individual": 15178,
+    "none": 2692,
+    "self": 2034,
+    "group": 481,
+    "topic": 383,
+    "activity": 22,
+    "unknown": 5
+  }
+}
