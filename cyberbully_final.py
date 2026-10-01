@@ -93,8 +93,8 @@ except ImportError:                                   # pragma: no cover
 # CONFIG DEFAULTS (all overridable from the command line)
 # ============================================================================
 DEFAULTS = dict(
-    data_paths=[r"dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_merged_dataset.csv"],   # can pass several; they get concatenated
-    out_dir="./cyberbully_v0.1_run",
+    data_paths=[r"dataset_generation\helper_files\dataset\generated_dataset\cyberbullying_dataset.csv"],   # can pass several; they get concatenated
+    out_dir="./cyberbully_v0.2_run",
     model="distilbert-base-uncased",
     max_len=128,
     batch_size=16,
