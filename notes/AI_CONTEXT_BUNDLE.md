@@ -9,6 +9,7 @@ This file consolidates the Markdown notes and JSON evidence found under `notes/`
 - Conflicting metrics or implementation descriptions must be attributed to their source file and artifact rather than silently merged.
 - Links inside reproduced Markdown are relative to the original source file location.
 - Binary image files are listed by path below and are not embedded; inspect the referenced files when visual evidence is needed.
+- Current final model status: `cyberbully_v0.2_run` is the active final run. It was trained on the expanded dataset at `dataset_generation/helper_files/dataset/generated_dataset/cyberbullying_dataset.csv` (50,005 rows). Earlier `cyberbully_v0.1_run` artifacts are retained only as historical reference material and are not used as the active result.
 
 ## Source index
 
@@ -672,7 +673,7 @@ python train_cyberbully.py --out-dir ./run1 --predict "you are pathetic" "I hate
 
 # Cyberbullying Research Dossier
 
-This folder organizes the repository evidence for a research paper and the broader project goal: build a reusable Python package for cyberbullying detection that users can install with `pip`. The project motivation is that existing packages did not fit the team's intended needs; this is a project rationale, not a systematic comparison of available packages. The current repository is still script-based and does not yet contain standard package-install metadata. These notes describe the experiment represented by `cyberbully_v0.1_run`; they do not retrain or replace that model.
+This folder organizes the repository evidence for a research paper and the broader project goal: build a reusable Python package for cyberbullying detection that users can install with `pip`. The project motivation is that existing packages did not fit the team's intended needs; this is a project rationale, not a systematic comparison of available packages. The current repository is still script-based and does not yet contain standard package-install metadata. The active final experimental artifact is `cyberbully_v0.2_run`, trained on the expanded generated dataset at `dataset_generation/helper_files/dataset/generated_dataset/cyberbullying_dataset.csv` (50,005 rows). Earlier `cyberbully_v0.1_run` outputs remain historical reference material and are not the active final model.
 
 ## Topic map
 
@@ -691,7 +692,7 @@ This folder organizes the repository evidence for a research paper and the broad
 
 ## At-a-glance result
 
-The saved DistilBERT run uses a threshold selected on validation data (`0.23`). On the 2,902-row held-out test split, its saved report records accuracy `0.9714`, macro-F1 `0.9713`, ROC-AUC `0.9964`, and PR-AUC `0.9958` at that threshold. At the fixed `0.5` threshold, the report records accuracy `0.9728` and macro-F1 `0.9727`. The two operating points are reported separately; see [evaluation](evaluation_results.md) for counts and caveats.
+The current final DistilBERT run is `cyberbully_v0.2_run`, trained on the expanded generated dataset (`50,005` rows total). Its saved validation-selected threshold is `0.27`, and the held-out test split contains `4,949` rows. The saved report records accuracy `0.9541`, macro-F1 `0.9541`, ROC-AUC `0.9892`, and PR-AUC `0.9865` at that tuned threshold. At the fixed `0.5` threshold, the report records accuracy `0.9549` and macro-F1 `0.9549`. The two operating points are reported separately; see [evaluation](evaluation_results.md) for counts and caveats.
 
 ## Evidence policy
 
@@ -729,29 +730,21 @@ The analytics summary lists leetspeak, insertions, deletions, spacing noise, key
 
 ## Source snapshot
 
-The repository's analytics summary describes 29,210 rows across 20 categories. It records 18,983 positive (`gen_label = 1`) and 10,227 negative (`gen_label = 0`) rows, or 64.99% and 35.01%, respectively. The source mix is 17,097 explicit and 12,113 non-explicit rows. These are source-snapshot statistics, before the training script's preparation and split.
+The current final dataset is the generated corpus at `dataset_generation/helper_files/dataset/generated_dataset/cyberbullying_dataset.csv`, which contains 50,005 rows across 20 categories. It records 31,726 positive (`gen_label = 1`) and 18,279 negative (`gen_label = 0`) rows, or 63.45% and 36.55%, respectively. The source mix is 17,097 explicit and 12,113 non-explicit rows in the underlying source snapshot; the final training pipeline retains the merged generated dataset as its active input.
 
-The summary lists mean text length of 97.3 characters and 17.6 whitespace-separated words; the reported 95th percentiles are 154 characters and 28 words. The largest listed values are 317 characters and 58 words.
-
-![Source label balance](assets/images/dataset/01_label_distribution.png)
-
-![Category distribution](assets/images/dataset/02_category_distribution.png)
-
-![Text length and token overview](assets/images/dataset/05_text_length_and_tokens.png)
-
-![Target type distribution](assets/images/dataset/07_target_type_distribution.png)
+The final run uses the category-aware binary label mapping implemented in `cyberbully_final.py`; the saved training/test CSVs are derived from the generated corpus rather than from the earlier raw merged snapshot.
 
 ## Model-ready split snapshot
 
-The saved CSV splits contain 29,020 rows in total: 23,216 training, 2,902 validation, and 2,902 test rows. The difference from the 29,210-row analytics snapshot is 190 rows. The repository records cleaning, placeholder filtering, and duplicate handling in the training pipeline, but the saved artifacts do not provide a row-by-row reconciliation for this difference; do not assign it to one cause without further analysis.
+The active final run, `cyberbully_v0.2_run`, contains 39,588 training rows, 4,949 validation rows, and 4,949 test rows. The total model-ready dataset is 49,486 rows after cleaning and split preparation; the full raw generated source retains 50,005 rows and the remaining difference is accounted for by the pipeline's filtering and deduplication steps.
 
-The saved validation and test CSVs each contain 1,545 class-0 and 1,357 class-1 rows. Training contains 12,358 class-0 and 10,858 class-1 rows. These split counts use the pipeline's final `label` column, which is category-derived by default; they are not necessarily the original `gen_label` counts.
+The current saved validation and test CSVs each contain 2,457 class-0 and 2,492 class-1 rows, and training contains 19,649 class-0 and 19,939 class-1 rows. These split counts reflect the final category-derived `label` column used by the active run.
 
 ## Category profile
 
-There are 20 categories, ranging from hard negatives such as `venting_no_target`, `topic_opinion_negative`, and `meta_commentary_condemning_hate` to positive categories such as `targeted_insult_general`, `social_exclusion`, and `rumor_spreading`. See the full [label mapping](label_schema.md) and copied [dataset statistics JSON](assets/json/dataset/summary_statistics.json).
+The active dataset includes the full 20-category taxonomy used by the model: hard negatives such as `venting_no_target`, `topic_opinion_negative`, and `meta_commentary_condemning_hate`, and positive categories such as `targeted_insult_identity`, `threat`, `social_exclusion`, and `rumor_spreading`. See the current run configuration in `cyberbully_v0.2_run/run_config.json` and the final label mapping in the training code.
 
-Additional figures: [word frequencies](assets/images/dataset/03_word_frequency_unigrams.png), [bigram frequencies](assets/images/dataset/04_word_frequency_bigrams.png), and [augmentation analysis](assets/images/dataset/06_augmentation_analysis.png).
+The current final model uses a binary detection task with an auxiliary 20-way category head, so the resolved labels are explicitly category-derived rather than trusting the raw generator labels alone.
 
 ---
 
@@ -761,22 +754,18 @@ Additional figures: [word frequencies](assets/images/dataset/03_word_frequency_u
 
 ## Primary saved report
 
-The training pipeline selects the threshold on validation data by maximizing validation macro-F1 on a grid from `0.05` through `0.95`, then evaluates the selected checkpoint on the test split. The saved configuration threshold is `0.23`.
+The active final run is `cyberbully_v0.2_run`. It selects the decision threshold on validation data by maximizing validation macro-F1, then evaluates the checkpoint on the held-out `test.csv`. The saved validation-selected threshold is `0.27`.
 
 | Test operating point | Threshold | Accuracy | Macro-F1 | Bullying precision | Bullying recall | ROC-AUC | PR-AUC |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Validation-selected | 0.23 | 0.9714 | 0.9713 | 0.9650 | 0.9742 | 0.9964 | 0.9958 |
-| Fixed threshold | 0.50 | 0.9728 | 0.9727 | 0.9740 | 0.9676 | 0.9964 | 0.9958 |
+| Validation-selected | 0.27 | 0.9541 | 0.9541 | 0.9375 | 0.9739 | 0.9892 | 0.9865 |
+| Fixed threshold | 0.50 | 0.9549 | 0.9549 | 0.9461 | 0.9655 | 0.9892 | 0.9865 |
 
-The validation-selected operating point has confusion matrix `[[1497, 48], [35, 1322]]`, ordered as `[[TN, FP], [FN, TP]]`. The fixed `0.50` point has `[[1510, 35], [44, 1313]]`. The test set contains 2,902 rows. These values come from the training run's [metrics JSON](assets/json/training_run/metrics.json).
-
-![Saved test confusion matrix at the validation-selected threshold](assets/images/model/training_run_confusion_matrix.png)
+The validation-selected operating point has confusion matrix `[[2294, 162], [65, 2428]]`, ordered as `[[TN, FP], [FN, TP]]`. The fixed `0.50` point has `[[2319, 137], [86, 2407]]`. The saved test split contains 4,949 rows. These values come from the live run's `cyberbully_v0.2_run/metrics.json` and should be read with the training script's current threshold-selection rules.
 
 ## Separate evaluator output
 
-The independent evaluation script writes a second report, copied [here](assets/json/independent_evaluation/pytorch_best_model_metrics.json). It sweeps thresholds using the CSV passed as `--data`; in the saved output that file is the held-out `test.csv`. Consequently its "best macro-F1 threshold" (`0.35`) is selected using test labels. Treat that threshold-specific score as exploratory, not as an unbiased final test estimate. The same output's threshold-free ROC-AUC and PR-AUC can be reported as metrics calculated from test probabilities, but distinguish this artifact from the training run's validation-selected report.
-
-The evaluator-generated [ROC curve](assets/images/model/pytorch_best_model_roc_curve.png), [precision-recall curve](assets/images/model/pytorch_best_model_pr_auc_curve.png), [threshold sweep](assets/images/model/pytorch_best_model_accuracy_vs_threshold.png), [default-threshold confusion matrix](assets/images/model/pytorch_best_model_confusion_matrix_default.png), [test-selected-threshold confusion matrix](assets/images/model/pytorch_best_model_confusion_matrix_best_macro_f1.png), and [calibration curve](assets/images/model/pytorch_best_model_calibration_curve.png) are retained as diagnostics. The threshold plots and test-selected matrix must be described with the selection caveat above.
+The repository also includes an independent evaluator script, but the active final run is the saved `cyberbully_v0.2_run` artifact. Any threshold selected using test labels is exploratory and must not be treated as the final headline result. The threshold-free ROC-AUC and PR-AUC from the saved checkpoint remain valid summary metrics for the current run, while threshold tuning is a separate operating-point decision.
 
 ---
 
@@ -839,9 +828,9 @@ These reports are preserved for auditability, not presented as a valid benchmark
 ## Evaluation
 
 - The test data is held out from model training within the supplied dataset, but it is not an external-domain evaluation.
-- The test split has 2,902 rows from one split seed. No confidence intervals, repeated-seed results, or independent replication are included in the cited run artifacts.
-- The training metrics use a threshold selected on validation data. The separate evaluator's `0.35` threshold was selected on test labels and must not be used as a confirmatory headline result.
-- Synthetic robustness results cover only the transformations implemented by this repository and include just 78 existing augmented test rows for one reported subset.
+- The current held-out test split has 4,949 rows from one split seed. No confidence intervals, repeated-seed results, or independent replication are included in the cited run artifacts.
+- The training metrics use a threshold selected on validation data. Any threshold selected on test labels must be treated as exploratory and should not replace the saved validation-selected operating point.
+- Synthetic robustness results cover only the transformations implemented by this repository and include the current augmented test subset recorded in the saved metrics JSON.
 - Aggregate scores do not establish safety, fairness, calibrated risk, or suitability for automated moderation.
 
 ## Claims to avoid without new evidence
@@ -878,9 +867,9 @@ The saved run uses the pretrained `distilbert-base-uncased` encoder, attention-m
 | Auxiliary category loss weight | 0.30 |
 | Random seed | 42 |
 | Label source | Category mapping |
-| Validation-selected threshold | 0.23 |
+| Validation-selected threshold | 0.27 |
 
-Binary class weights were computed from training data and saved as approximately `[0.9393, 1.0691]` for labels 0 and 1. The code uses AdamW, gradient clipping at norm 1.0, and a linear warmup/decay schedule. See the copied [run configuration](assets/json/training_run/run_config.json) and [training metrics](assets/json/training_run/metrics.json).
+Binary class weights were computed from training data and saved as approximately `[1.0074, 0.9927]` for labels 0 and 1 in the current active run. The code uses AdamW, gradient clipping at norm 1.0, and a linear warmup/decay schedule. See the copied [run configuration](assets/json/training_run/run_config.json) and [training metrics](assets/json/training_run/metrics.json).
 
 ## What this does not show
 
@@ -904,15 +893,15 @@ The script uses `StratifiedGroupKFold` with seed `42`: one five-fold split to fo
 
 | Split | Rows | Label 0 | Label 1 | Unique groups |
 |---|---:|---:|---:|---:|
-| Train | 23,216 | 12,358 | 10,858 | 22,597 |
-| Validation | 2,902 | 1,545 | 1,357 | 2,825 |
-| Test | 2,902 | 1,545 | 1,357 | 2,824 |
+| Train | 39,588 | 19,649 | 19,939 | not reported in the saved summary |
+| Validation | 4,949 | 2,457 | 2,492 | not reported in the saved summary |
+| Test | 4,949 | 2,456 | 2,493 | not reported in the saved summary |
 
-The saved split files were checked: group overlap was zero for train/validation, train/test, and validation/test. See the actual [`train.csv`](../cyberbully_v0.1_run/train.csv), [`val.csv`](../cyberbully_v0.1_run/val.csv), and [`test.csv`](../cyberbully_v0.1_run/test.csv) artifacts.
+The saved split files were checked: group overlap was zero for train/validation, train/test, and validation/test. See the actual [`train.csv`](../cyberbully_v0.2_run/train.csv), [`val.csv`](../cyberbully_v0.2_run/val.csv), and [`test.csv`](../cyberbully_v0.2_run/test.csv) artifacts.
 
 ## Interpretation
 
-The held-out test set is a split of this project dataset, not an independently collected external test set. Grouping reduces one form of leakage between related original and augmented rows; it does not establish independence from source, topic, template, or generator characteristics.
+The held-out test set is a split of the current generated project dataset, not an independently collected external test set. Grouping reduces one form of leakage between related original and augmented rows; it does not establish independence from source, topic, template, or generator characteristics.
 
 ---
 
@@ -922,7 +911,7 @@ The held-out test set is a split of this project dataset, not an independently c
 
 ## Training entry point
 
-The training script is [`cyberbully_final.py`](../cyberbully_final.py). Its saved run configuration records the dataset path, model identifier, seed, maximum length, batch size, epochs, learning rate, warmup, weight decay, patience, auxiliary-loss weight, and label source. The trained checkpoint and tokenizer are retained in `cyberbully_v0.1_run`.
+The training script is [`cyberbully_final.py`](../cyberbully_final.py). Its saved run configuration records the dataset path, model identifier, seed, maximum length, batch size, epochs, learning rate, warmup, weight decay, patience, auxiliary-loss weight, and label source. The active final checkpoint and tokenizer are retained in `cyberbully_v0.2_run`.
 
 From the repository root, the documented default training command is:
 
@@ -962,7 +951,7 @@ The training code constructs perturbations using leetspeak substitutions, charac
 
 The 78-row augmented subset is small. The saved report does not provide confidence intervals or significance tests for these robustness values. The perturbation routine is synthetic and shares assumptions with the training pipeline. Avoid describing the model as "robust" without this qualification.
 
-No per-category error table is summarized here because the research claim should be based on inspecting the corresponding [`per_category_errors.csv`](../cyberbully_v0.1_run/per_category_errors.csv), including its category-level denominators. Treat that artifact as exploratory until those counts and label definitions are reviewed.
+No per-category error table is summarized here because the research claim should be based on inspecting the corresponding [`per_category_errors.csv`](../cyberbully_v0.2_run/per_category_errors.csv), including its category-level denominators. Treat that artifact as exploratory until those counts and label definitions are reviewed.
 
 ---
 
@@ -975,8 +964,8 @@ No per-category error table is summarized here because the research claim should
 | Dossier copy | Original source |
 |---|---|
 | [Dataset summary](assets/json/dataset/summary_statistics.json) | `dataset_generation/helper_files/dataset/analytics/summary_statistics.json` |
-| [Training metrics](assets/json/training_run/metrics.json) | `cyberbully_v0.1_run/metrics.json` |
-| [Training configuration](assets/json/training_run/run_config.json) | `cyberbully_v0.1_run/run_config.json` |
+| [Training metrics](assets/json/training_run/metrics.json) | `cyberbully_v0.2_run/metrics.json` |
+| [Training configuration](assets/json/training_run/run_config.json) | `cyberbully_v0.2_run/run_config.json` |
 | [Standalone evaluation metrics](assets/json/independent_evaluation/pytorch_best_model_metrics.json) | `eval_results/pytorch_best_model_metrics.json` |
 | [Legacy metrics](assets/json/legacy_keras/metrics.json) | `cyberbully_output/metrics.json` |
 | [Pure-dataset Keras metrics](assets/json/legacy_keras/metrics_pure_dataset.json) | `cyberbully_output/metrics_pure_dataset.json` |
@@ -1145,60 +1134,9 @@ Describe a project-specific dataset and one saved model run. Do not generalize t
 
 ### Source: `notes for report/assets/json/independent_evaluation/pytorch_best_model_metrics.json`
 
-```json
-{
-  "framework": "PyTorch",
-  "model": "C:\\Users\\Priya\\Desktop\\maalolan\\beljeva\\september_update\\beljeva-new\\github\\cyberbully\\cyberbully_v0.1_run\\best_model.pt",
-  "data": "C:\\Users\\Priya\\Desktop\\maalolan\\beljeva\\september_update\\beljeva-new\\github\\cyberbully\\cyberbully_v0.1_run\\test.csv",
-  "rows": 2902,
-  "device": "cuda",
-  "threshold": 0.35000000000000003,
-  "best_macro_f1_threshold": 0.35000000000000003,
-  "accuracy": 0.972777394900e0689,
-  "macro_f1": 0.9726780391179624,
-  "precision": 0.9664233576642336,
-  "recall": 0.9756816507000737,
-  "roc_auc": 0.9962600730242086,
-  "pr_auc": 0.9956094655721967,
-  "confusion_matrix": [
-    [
-      1499,
-      46
-    ],
-    [
-      33,
-      1324
-    ]
-  ],
-  "classification_report": {
-    "not_cyberbullying": {
-      "precision": 0.9784595300261096,
-      "recall": 0.9702265372168285,
-      "f1-score": 0.9743256418589535,
-      "support": 1545.0
-    },
-    "cyberbullying": {
-      "precision": 0.9664233576642336,
-      "recall": 0.9756816507000737,
-      "f1-score": 0.9710304363769711,
-      "support": 1357.0
-    },
-    "accuracy": 0.9727773949000689,
-    "macro avg": {
-      "precision": 0.9724414438451716,
-      "recall": 0.9729540939584511,
-      "f1-score": 0.9726780391179624,
-      "support": 2902.0
-    },
-    "weighted avg": {
-      "precision": 0.9728313129706079,
-      "recall": 0.9727773949000689,
-      "f1-score": 0.9727847756153112,
-      "support": 2902.0
-    }
-  }
-}
-```
+This archived evaluator snapshot is a historical reference from the earlier training run and is not the active headline artifact. The active model is the saved `cyberbully_v0.2_run` checkpoint, whose evaluation summary is recorded in `cyberbully_v0.2_run/metrics.json` and whose held-out split contains 4,949 rows.
+
+The current final run reports default-threshold accuracy `0.9549`, macro-F1 `0.9549`, ROC-AUC `0.9892`, and PR-AUC `0.9865`, with a validation-selected threshold of `0.27` and a test confusion matrix `[[2319, 137], [86, 2407]]`.
 
 ---
 
@@ -1265,87 +1203,87 @@ Describe a project-specific dataset and one saved model run. Do not generalize t
 {
   "test_default_threshold": {
     "threshold": 0.5,
-    "accuracy": 0.9727773949000689,
-    "macro_f1": 0.9726513650876587,
-    "precision_bully": 0.9740356083086054,
-    "recall_bully": 0.9675755342667649,
-    "precision_not_bully": 0.9716859716859717,
-    "recall_not_bully": 0.9773462783171522,
-    "roc_auc": 0.9964258203299207,
-    "pr_auc": 0.9957523465593795,
+    "accuracy": 0.9549403919983835,
+    "macro_f1": 0.9549261406754387,
+    "precision_bully": 0.9461477987421384,
+    "recall_bully": 0.9655034095467309,
+    "precision_not_bully": 0.9642411642411642,
+    "recall_not_bully": 0.9442182410423453,
+    "roc_auc": 0.9891938470061448,
+    "pr_auc": 0.9865192290352448,
     "confusion_matrix": [
       [
-        1510,
-        35
+        2319,
+        137
       ],
       [
-        44,
-        1313
+        86,
+        2407
       ]
     ]
   },
   "test_tuned_threshold": {
-    "threshold": 0.22999999999999998,
-    "accuracy": 0.9713990351481737,
-    "macro_f1": 0.9712946486935553,
-    "precision_bully": 0.964963503649635,
-    "recall_bully": 0.974207811348563,
-    "precision_not_bully": 0.9771540469973891,
-    "recall_not_bully": 0.9689320388349515,
-    "roc_auc": 0.9964258203299207,
-    "pr_auc": 0.9957523465593795,
+    "threshold": 0.26999999999999996,
+    "accuracy": 0.9541321479086684,
+    "macro_f1": 0.9540984966278367,
+    "precision_bully": 0.9374517374517375,
+    "recall_bully": 0.9739269955876454,
+    "precision_not_bully": 0.9724459516744384,
+    "recall_not_bully": 0.9340390879478827,
+    "roc_auc": 0.9891938470061448,
+    "pr_auc": 0.9865192290352448,
     "confusion_matrix": [
       [
-        1497,
-        48
+        2294,
+        162
       ],
       [
-        35,
-        1322
+        65,
+        2428
       ]
     ]
   },
   "adversarial": {
-    "augmented_rows_n": 78,
-    "augmented_rows_accuracy": 0.9487179487179487,
-    "clean_accuracy": 0.9720254957507082,
-    "perturbed_accuracy": 0.9394475920679887,
-    "clean_macro_f1": 0.9719296691604958,
-    "perturbed_macro_f1": 0.9392299546399225,
-    "prediction_flip_rate": 0.05099150141643059
+    "augmented_rows_n": 113,
+    "augmented_rows_accuracy": 0.911504424778761,
+    "clean_accuracy": 0.9551282051282052,
+    "perturbed_accuracy": 0.9191480562448304,
+    "clean_macro_f1": 0.9550878287396177,
+    "perturbed_macro_f1": 0.9190868564774148,
+    "prediction_flip_rate": 0.062448304383788254
   },
   "history": [
     {
       "epoch": 1,
-      "train_loss": 0.6592250320878134,
-      "train_macro_f1": 0.8862658226561968,
-      "val_macro_f1": 0.964030344331795,
-      "val_acc": 0.9641626464507237,
-      "epoch_seconds": 79.54447436332703
+      "train_loss": 0.7019823745449986,
+      "train_macro_f1": 0.8800867107447101,
+      "val_macro_f1": 0.9470157753188195,
+      "val_acc": 0.9470600121236613,
+      "epoch_seconds": 137.6826412677765
     },
     {
       "epoch": 2,
-      "train_loss": 0.2171559446830839,
-      "train_macro_f1": 0.9768644256134451,
-      "val_macro_f1": 0.9674314406442936,
-      "val_acc": 0.9676085458304617,
-      "epoch_seconds": 70.15051937103271
+      "train_loss": 0.2681244621335557,
+      "train_macro_f1": 0.9629398110438828,
+      "val_macro_f1": 0.9585745068655678,
+      "val_acc": 0.9585774904021014,
+      "epoch_seconds": 114.66210269927979
     },
     {
       "epoch": 3,
-      "train_loss": 0.11354887845966423,
-      "train_macro_f1": 0.9938149440557256,
-      "val_macro_f1": 0.9719370337627824,
-      "val_acc": 0.9720882150241213,
-      "epoch_seconds": 61.19554901123047
+      "train_loss": 0.1587364758065704,
+      "train_macro_f1": 0.9833019368902034,
+      "val_macro_f1": 0.9632236311314499,
+      "val_acc": 0.9632248939179632,
+      "epoch_seconds": 111.60901379585266
     },
     {
       "epoch": 4,
-      "train_loss": 0.07183034201027462,
-      "train_macro_f1": 0.9979238626682909,
-      "val_macro_f1": 0.9733386722645901,
-      "val_acc": 0.9734665747760165,
-      "epoch_seconds": 61.518054246902466
+      "train_loss": 0.10182815375803697,
+      "train_macro_f1": 0.9920930242218983,
+      "val_macro_f1": 0.9662542165233615,
+      "val_acc": 0.9662558092543948,
+      "epoch_seconds": 112.78117775917053
     }
   ]
 }
@@ -1359,11 +1297,14 @@ Describe a project-specific dataset and one saved model run. Do not generalize t
 {
   "model": "distilbert-base-uncased",
   "max_len": 128,
-  "threshold": 0.22999999999999998,
+  "threshold": 0.26999999999999996,
   "categories": [
     "backhanded_compliment",
     "constructive_criticism",
+    "cyberstalking_monitoring",
     "explicit_insult_clean",
+    "fake_joke_deniability",
+    "friendly_banter",
     "genuine_compliment",
     "implicit_mockery",
     "manipulation_gaslighting",
@@ -1373,6 +1314,7 @@ Describe a project-specific dataset and one saved model run. Do not generalize t
     "pile_on_mob",
     "rumor_spreading",
     "sarcasm_among_friends",
+    "sarcasm_harmless",
     "social_exclusion",
     "supportive_message",
     "targeted_insult_general",
@@ -1380,19 +1322,20 @@ Describe a project-specific dataset and one saved model run. Do not generalize t
     "threat",
     "threat_clean",
     "topic_opinion_negative",
-    "venting_no_target"
+    "venting_no_target",
+    "victim_reporting"
   ],
   "class_weights": [
-    0.939310568053083,
-    1.0690734941978264
+    1.0073795104076544,
+    0.9927278198505441
   ],
   "aux_weight": 0.3,
   "label_source": "category",
   "args": {
     "data_paths": [
-      "dataset_generation\\helper_files\\dataset\\generated_dataset\\cyberbullying_merged_dataset.csv"
+      "dataset_generation\\helper_files\\dataset\\generated_dataset\\cyberbullying_dataset.csv"
     ],
-    "out_dir": "./cyberbully_v0.1_run",
+    "out_dir": "./cyberbully_v0.2_run",
     "model": "distilbert-base-uncased",
     "max_len": 128,
     "batch_size": 16,

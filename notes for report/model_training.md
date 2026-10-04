@@ -20,9 +20,9 @@ The saved run uses the pretrained `distilbert-base-uncased` encoder, attention-m
 | Auxiliary category loss weight | 0.30 |
 | Random seed | 42 |
 | Label source | Category mapping |
-| Validation-selected threshold | 0.23 |
+| Validation-selected threshold | 0.27 |
 
-Binary class weights were computed from training data and saved as approximately `[0.9393, 1.0691]` for labels 0 and 1. The code uses AdamW, gradient clipping at norm 1.0, and a linear warmup/decay schedule. See the copied [run configuration](assets/json/training_run/run_config.json) and [training metrics](assets/json/training_run/metrics.json).
+Binary class weights were computed from training data and saved as approximately `[1.0074, 0.9927]` for labels 0 and 1. The code uses AdamW, gradient clipping at norm 1.0, and a linear warmup/decay schedule. See the copied [run configuration](assets/json/training_run/run_config.json) and [training metrics](assets/json/training_run/metrics.json).
 
 ## What this does not show
 

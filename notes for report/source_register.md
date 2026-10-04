@@ -5,8 +5,8 @@
 | Dossier copy | Original source |
 |---|---|
 | [Dataset summary](assets/json/dataset/summary_statistics.json) | `dataset_generation/helper_files/dataset/analytics/summary_statistics.json` |
-| [Training metrics](assets/json/training_run/metrics.json) | `cyberbully_v0.1_run/metrics.json` |
-| [Training configuration](assets/json/training_run/run_config.json) | `cyberbully_v0.1_run/run_config.json` |
+| [Training metrics](assets/json/training_run/metrics.json) | `cyberbully_v0.2_run/metrics.json` |
+| [Training configuration](assets/json/training_run/run_config.json) | `cyberbully_v0.2_run/run_config.json` |
 | [Standalone evaluation metrics](assets/json/independent_evaluation/pytorch_best_model_metrics.json) | `eval_results/pytorch_best_model_metrics.json` |
 | [Legacy metrics](assets/json/legacy_keras/metrics.json) | `cyberbully_output/metrics.json` |
 | [Pure-dataset Keras metrics](assets/json/legacy_keras/metrics_pure_dataset.json) | `cyberbully_output/metrics_pure_dataset.json` |

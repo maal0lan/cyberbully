@@ -2,7 +2,7 @@
 
 ## Training entry point
 
-The training script is [`cyberbully_final.py`](../cyberbully_final.py). Its saved run configuration records the dataset path, model identifier, seed, maximum length, batch size, epochs, learning rate, warmup, weight decay, patience, auxiliary-loss weight, and label source. The trained checkpoint and tokenizer are retained in `cyberbully_v0.1_run`.
+The training script is [`cyberbully_final.py`](../cyberbully_final.py). Its saved run configuration records the dataset path, model identifier, seed, maximum length, batch size, epochs, learning rate, warmup, weight decay, patience, auxiliary-loss weight, and label source. The current final checkpoint and tokenizer are retained in `cyberbully_v0.2_run`, which was trained on the expanded generated dataset at `dataset_generation/helper_files/dataset/generated_dataset/cyberbullying_dataset.csv`.
 
 From the repository root, the documented default training command is:
 

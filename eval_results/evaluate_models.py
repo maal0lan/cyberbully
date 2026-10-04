@@ -3,7 +3,7 @@
 Run from the repository root:
     python eval_results/evaluate_models.py
 
-Uses cyberbully_v0.1_run/test.csv and best_model.pt by default. TensorFlow and
+Uses cyberbully_v0.2_run/test.csv and best_model.pt by default. TensorFlow and
 .keras files are intentionally not used.
 """
 
@@ -38,7 +38,7 @@ from sklearn.metrics import (
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RUN_DIR = ROOT / "cyberbully_v0.1_run"
+DEFAULT_RUN_DIR = ROOT / "cyberbully_v0.2_run"
 DEFAULT_OUTPUT = ROOT / "eval_results"
 URL_RE = re.compile(r"https?://\S+|www\.\S+", re.I)
 MENTION_RE = re.compile(r"@\w+")

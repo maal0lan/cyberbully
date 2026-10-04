@@ -2,7 +2,7 @@
 
 ## Saved robustness measurements
 
-The training run reports accuracy `0.9487` on 78 augmented test rows. It also reports clean accuracy `0.9720`, accuracy `0.9394` on programmatically perturbed clean test text, clean macro-F1 `0.9719`, perturbed macro-F1 `0.9392`, and prediction flip rate `0.0510`.
+The training run reports accuracy `0.9115` on 113 augmented test rows. It also reports clean accuracy `0.9551`, accuracy `0.9191` on programmatically perturbed clean test text, clean macro-F1 `0.9551`, perturbed macro-F1 `0.9191`, and prediction flip rate `0.0624`.
 
 The training code constructs perturbations using leetspeak substitutions, character deletion/insertion, neighboring-key substitutions, and inserted spacing. These are results for the implemented synthetic transformations only; they do not establish robustness to all evasion strategies or naturally occurring language variation.
 

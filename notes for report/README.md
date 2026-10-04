@@ -1,6 +1,6 @@
 # Cyberbullying Research Dossier
 
-This folder organizes the repository evidence for a research paper and the broader project goal: build a reusable Python package for cyberbullying detection that users can install with `pip`. The project motivation is that existing packages did not fit the team's intended needs; this is a project rationale, not a systematic comparison of available packages. The current repository is still script-based and does not yet contain standard package-install metadata. These notes describe the experiment represented by `cyberbully_v0.1_run`; they do not retrain or replace that model.
+This folder organizes the repository evidence for a research paper and the broader project goal: build a reusable Python package for cyberbullying detection that users can install with `pip`. The project motivation is that existing packages did not fit the team's intended needs; this is a project rationale, not a systematic comparison of available packages. The current repository is still script-based and does not yet contain standard package-install metadata. The current final experimental artifact is `cyberbully_v0.2_run`, trained on the expanded generated dataset at `dataset_generation/helper_files/dataset/generated_dataset/cyberbullying_dataset.csv` (50,005 rows). Earlier `cyberbully_v0.1_run` outputs remain historical reference material and are not the active final model.
 
 ## Topic map
 
@@ -19,7 +19,7 @@ This folder organizes the repository evidence for a research paper and the broad
 
 ## At-a-glance result
 
-The saved DistilBERT run uses a threshold selected on validation data (`0.23`). On the 2,902-row held-out test split, its saved report records accuracy `0.9714`, macro-F1 `0.9713`, ROC-AUC `0.9964`, and PR-AUC `0.9958` at that threshold. At the fixed `0.5` threshold, the report records accuracy `0.9728` and macro-F1 `0.9727`. The two operating points are reported separately; see [evaluation](evaluation_results.md) for counts and caveats.
+The current final DistilBERT run is `cyberbully_v0.2_run`, trained on the expanded generated dataset (`50,005` rows total). Its saved validation-selected threshold is `0.27`, and the held-out test split contains `4,949` rows. The saved report records accuracy `0.9541`, macro-F1 `0.9541`, ROC-AUC `0.9892`, and PR-AUC `0.9865` at that tuned threshold. At the fixed `0.5` threshold, the report records accuracy `0.9549` and macro-F1 `0.9549`. The two operating points are reported separately; see [evaluation](evaluation_results.md) for counts and caveats.
 
 ## Evidence policy
 

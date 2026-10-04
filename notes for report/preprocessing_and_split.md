@@ -12,11 +12,11 @@ The script uses `StratifiedGroupKFold` with seed `42`: one five-fold split to fo
 
 | Split | Rows | Label 0 | Label 1 | Unique groups |
 |---|---:|---:|---:|---:|
-| Train | 23,216 | 12,358 | 10,858 | 22,597 |
-| Validation | 2,902 | 1,545 | 1,357 | 2,825 |
-| Test | 2,902 | 1,545 | 1,357 | 2,824 |
+| Train | 39,588 | 19,649 | 19,939 | 38,683 |
+| Validation | 4,949 | 2,457 | 2,492 | 4,837 |
+| Test | 4,949 | 2,456 | 2,493 | 4,836 |
 
-The saved split files were checked: group overlap was zero for train/validation, train/test, and validation/test. See the actual [`train.csv`](../cyberbully_v0.1_run/train.csv), [`val.csv`](../cyberbully_v0.1_run/val.csv), and [`test.csv`](../cyberbully_v0.1_run/test.csv) artifacts.
+The saved split files were checked: group overlap was zero for train/validation, train/test, and validation/test. See the actual [`train.csv`](../cyberbully_v0.2_run/train.csv), [`val.csv`](../cyberbully_v0.2_run/val.csv), and [`test.csv`](../cyberbully_v0.2_run/test.csv) artifacts.
 
 ## Interpretation
 
