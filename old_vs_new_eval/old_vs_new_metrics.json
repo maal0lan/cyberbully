@@ -1,0 +1,35 @@
+{
+  "dataset": "D:\\Projects\\cyberbully\\cyberbully_v0.1_run\\test.csv",
+  "rows": 2902,
+  "positive_label": 1,
+  "threshold": 0.5,
+  "models": {
+    "Old Keras": {
+      "accuracy": 0.5368711233631978,
+      "precision_cyberbullying": 0.5585585585585585,
+      "recall_cyberbullying": 0.045689019896831246,
+      "f1_cyberbullying": 0.08446866485013624,
+      "macro_f1": 0.38725278260956997,
+      "false_positive_count": 49,
+      "false_negative_count": 1295,
+      "roc_auc": 0.5762876419285832,
+      "average_precision": 0.5154459111662458
+    },
+    "New DistilBERT v0.1": {
+      "accuracy": 0.9727773949000689,
+      "precision_cyberbullying": 0.9740356083086054,
+      "recall_cyberbullying": 0.9675755342667649,
+      "f1_cyberbullying": 0.9707948243992607,
+      "macro_f1": 0.9726513650876587,
+      "false_positive_count": 35,
+      "false_negative_count": 44,
+      "roc_auc": 0.9964258203299207,
+      "average_precision": 0.9957523465593795
+    }
+  },
+  "plots": {
+    "threshold_metrics": "D:\\Projects\\cyberbully\\old_vs_new_eval\\old_vs_new_threshold_metrics.png",
+    "roc_curve": "D:\\Projects\\cyberbully\\old_vs_new_eval\\old_vs_new_roc_curve.png",
+    "precision_recall_curve": "D:\\Projects\\cyberbully\\old_vs_new_eval\\old_vs_new_precision_recall_curve.png"
+  }
+}

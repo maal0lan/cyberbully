@@ -1,0 +1,42 @@
+{
+  "model": "D:\\Projects\\cyberbully\\cyberbully_output\\cyberbullying_detector_full.keras",
+  "data": "D:\\Projects\\cyberbully\\cyberbully_output\\heldout_test_data.csv",
+  "threshold": 0.5,
+  "test_samples": 4744,
+  "accuracy": 0.7647554806070826,
+  "precision_cyberbullying": 0.9968443197755961,
+  "recall_cyberbullying": 0.719746835443038,
+  "f1_cyberbullying": 0.8359306086445163,
+  "macro_f1": 0.7102214472857726,
+  "roc_auc": 0.9395662085897394,
+  "pr_auc": 0.9878160413748682,
+  "pr_auc_method": "average precision",
+  "false_positive_count": 9,
+  "false_negative_count": 1107,
+  "confusion_matrix": [
+    [
+      785,
+      9
+    ],
+    [
+      1107,
+      2843
+    ]
+  ],
+  "confusion_matrix_order": [
+    [
+      "true_negative",
+      "false_positive"
+    ],
+    [
+      "false_negative",
+      "true_positive"
+    ]
+  ],
+  "plots": {
+    "confusion_matrix": "D:\\Projects\\cyberbully\\cyberbully_output\\keras_confusion_matrix.png",
+    "threshold_metrics": "D:\\Projects\\cyberbully\\cyberbully_output\\keras_threshold_metrics.png",
+    "roc_curve": "D:\\Projects\\cyberbully\\cyberbully_output\\keras_roc_curve.png",
+    "precision_recall_curve": "D:\\Projects\\cyberbully\\cyberbully_output\\keras_precision_recall_curve.png"
+  }
+}
