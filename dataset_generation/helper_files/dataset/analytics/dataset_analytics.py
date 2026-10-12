@@ -44,6 +44,12 @@ COLOR_ACCENT = "#e76f51"
 sns.set_theme(style="whitegrid", font_scale=1.05)
 plt.rcParams.update({
     "font.sans-serif": ["Segoe UI", "DejaVu Sans", "Helvetica", "Arial"],
+    "text.color": "#000000",
+    "axes.labelcolor": "#000000",
+    "axes.titlecolor": "#000000",
+    "xtick.color": "#000000",
+    "ytick.color": "#000000",
+    "legend.labelcolor": "#000000",
     "axes.edgecolor": "#cccccc",
     "axes.linewidth": 0.8,
     "grid.color": "#e0e0e0",
@@ -54,8 +60,8 @@ plt.rcParams.update({
 
 def get_default_paths():
     current_dir = Path(__file__).resolve().parent
-    dataset_file = current_dir.parent / "cyberbullying_merged_dataset.csv"
-    plots_dir = current_dir / "plots"
+    dataset_file = current_dir.parent / "generated_dataset" / "cyberbullying_dataset.csv"
+    plots_dir = current_dir / "v0.2_analytics"
     stats_file = current_dir / "summary_statistics.json"
     return dataset_file, plots_dir, stats_file
 
@@ -94,7 +100,7 @@ def plot_label_distribution(df: pd.DataFrame, output_path: Path):
         wedgeprops=dict(width=0.45, edgecolor="white", linewidth=2)
     )
     for at in autotexts:
-        at.set_color("white")
+        at.set_color("#000000")
     axes[0].set_title("Overall Binary Class Balance (gen_label)", fontsize=14, fontweight="bold", pad=15)
 
     # Right: Grouped bar chart by dataset_source
@@ -160,7 +166,7 @@ def plot_category_distribution(df: pd.DataFrame, output_path: Path):
             f" {total_val:,}",
             xy=(total_val, i),
             va="center", ha="left",
-            fontsize=9.5, fontweight="bold", color="#333333"
+            fontsize=9.5, fontweight="bold", color="#000000"
         )
 
     ax.set_xlim(0, max(cat_summary["total"]) * 1.12)
